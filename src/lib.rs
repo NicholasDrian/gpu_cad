@@ -1,13 +1,28 @@
 pub mod geometry;
+pub mod linear_algebra;
 pub mod render;
 pub mod scene;
+pub mod widgets;
 
-use wasm_bindgen::prelude::*;
-
-use scene::camera::Camera;
-
-use geometry::vertex::Vertex;
 use render::renderer::Renderer;
+use wasm_bindgen::prelude::*;
+use winit::dpi::PhysicalSize;
+use winit::platform::web::WindowExtWebSys;
+
+use winit::{
+    event::*,
+    event_loop::{ControlFlow, EventLoop},
+    window::WindowBuilder,
+};
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    fn it_works() {
+        let result = 2 + 2;
+        assert_eq!(result, 4);
+    }
+}
 
 #[wasm_bindgen]
 extern "C" {
@@ -35,13 +50,7 @@ pub fn code_that_throws() -> Result<String, JsValue> {
     Ok(String::from("returned from throwing code"))
 }
 
-use winit::{
-    event::*,
-    event_loop::{ControlFlow, EventLoop},
-    window::WindowBuilder,
-};
-
-#[cfg_attr(target_arch = "wasm32", wasm_bindgen(start))]
+#[wasm_bindgen(start)]
 pub async fn run() {
     std::panic::set_hook(Box::new(console_error_panic_hook::hook));
     console_log::init_with_level(log::Level::Warn).expect("Could't initialize logger");
@@ -51,10 +60,8 @@ pub async fn run() {
 
     // Winit prevents sizing with CSS, so we have to set
     // the size manually when on web.
-    use winit::dpi::PhysicalSize;
     window.set_inner_size(PhysicalSize::new(450, 400));
 
-    use winit::platform::web::WindowExtWebSys;
     web_sys::window()
         .and_then(|win| win.document())
         .and_then(|doc| {

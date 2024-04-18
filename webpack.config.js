@@ -9,6 +9,16 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     filename: 'index.js',
   },
+
+  devServer: {
+    client: {
+
+      //prevent control flow error from showing on screen
+      overlay: false
+
+    }
+  },
+
   plugins: [
     new HtmlWebpackPlugin(),
     new WasmPackPlugin({

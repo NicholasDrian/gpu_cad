@@ -54,6 +54,22 @@ impl Mat3 {
     }
 
     pub fn transform(self, v: Vec3) -> Vec3 {
-        todo!()
+        let a00 = self.nums[0];
+        let a01 = self.nums[1];
+        let a02 = self.nums[2];
+
+        let a10 = self.nums[3];
+        let a11 = self.nums[4];
+        let a12 = self.nums[5];
+
+        let a20 = self.nums[6];
+        let a21 = self.nums[7];
+        let a22 = self.nums[8];
+
+        Vec3 {
+            x: v.x * a00 + v.y * a01 + v.z * a02,
+            y: v.x * a10 + v.y * a11 + v.z * a12,
+            z: v.x * a20 + v.y * a21 + v.z * a22,
+        }
     }
 }

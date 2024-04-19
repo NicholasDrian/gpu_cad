@@ -4,6 +4,9 @@ pub mod render;
 pub mod scene;
 pub mod widgets;
 
+#[cfg(test)]
+pub mod tests;
+
 use render::renderer::Renderer;
 use wasm_bindgen::prelude::*;
 use winit::dpi::PhysicalSize;

@@ -1,7 +1,7 @@
 use crate::linear_algebra::vec3::Vec3;
 
 /// column major 3x3 matrix.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Copy, Clone, Default)]
 pub struct Mat3 {
     pub nums: [f32; 9],
 }
@@ -54,6 +54,7 @@ impl Mat3 {
     }
 
     pub fn transform(self, v: &Vec3) -> Vec3 {
+
         let a00 = self.nums[0];
         let a01 = self.nums[1];
         let a02 = self.nums[2];

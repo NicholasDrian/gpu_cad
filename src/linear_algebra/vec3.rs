@@ -21,4 +21,19 @@ impl Vec3 {
             z: a.x * b.y - a.y * b.x,
         }
     }
+
+    pub fn normalize(&mut self) {
+        let size_square = self.x * self.x + self.y * self.y + self.z * self.z;
+        if size_square == 0.0 {
+            return;
+        }
+        let size = size_square.sqrt();
+        self.x /= size;
+        self.y /= size;
+        self.z /= size;
+    }
+
+    pub fn len(self) -> f32 {
+        f32::sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
+    }
 }

@@ -1,7 +1,7 @@
 use crate::linear_algebra::vec3::Vec3;
 
 /// column major 3x3 matrix.
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Mat3 {
     pub nums: [f32; 9],
 }
@@ -13,7 +13,7 @@ impl Mat3 {
         }
     }
 
-    pub fn mul(a: Mat3, b: Mat3) -> Mat3 {
+    pub fn multiply(a: &Mat3, b: &Mat3) -> Mat3 {
         let a00 = a.nums[0];
         let a01 = a.nums[1];
         let a02 = a.nums[2];
@@ -53,7 +53,7 @@ impl Mat3 {
         }
     }
 
-    pub fn transform(self, v: Vec3) -> Vec3 {
+    pub fn transform(self, v: &Vec3) -> Vec3 {
         let a00 = self.nums[0];
         let a01 = self.nums[1];
         let a02 = self.nums[2];
@@ -67,9 +67,9 @@ impl Mat3 {
         let a22 = self.nums[8];
 
         Vec3 {
-            x: v.x * a00 + v.y * a01 + v.z * a02,
-            y: v.x * a10 + v.y * a11 + v.z * a12,
-            z: v.x * a20 + v.y * a21 + v.z * a22,
+            x: v.x * a00 + v.y * a10 + v.z * a20,
+            y: v.x * a01 + v.y * a11 + v.z * a21,
+            z: v.x * a02 + v.y * a12 + v.z * a22,
         }
     }
 }

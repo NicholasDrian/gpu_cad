@@ -15,7 +15,7 @@ impl Mat4 {
         }
     }
 
-    pub fn mul(a: Mat4, b: Mat4) -> Mat4 {
+    pub fn multiply(a: Mat4, b: Mat4) -> Mat4 {
         let a00 = a.nums[0];
         let a01 = a.nums[4];
         let a02 = a.nums[8];
@@ -50,7 +50,26 @@ impl Mat4 {
         let b32 = b.nums[11];
         let b33 = b.nums[15];
 
-        todo!();
+        Mat4 {
+            nums: [
+                a00 * b00 + a10 * b01 + a20 * b02 + a30 * b03,
+                a01 * b00 + a11 * b01 + a21 * b02 + a31 * b03,
+                a02 * b00 + a12 * b01 + a22 * b02 + a32 * b03,
+                a03 * b00 + a13 * b01 + a23 * b02 + a33 * b03,
+                a00 * b10 + a10 * b11 + a20 * b12 + a30 * b13,
+                a01 * b10 + a11 * b11 + a21 * b12 + a31 * b13,
+                a02 * b10 + a12 * b11 + a22 * b12 + a32 * b13,
+                a03 * b10 + a13 * b11 + a23 * b12 + a33 * b13,
+                a00 * b20 + a10 * b21 + a20 * b22 + a30 * b23,
+                a01 * b20 + a11 * b21 + a21 * b22 + a31 * b23,
+                a02 * b20 + a12 * b21 + a22 * b22 + a32 * b23,
+                a03 * b20 + a13 * b21 + a23 * b22 + a33 * b23,
+                a00 * b30 + a10 * b31 + a20 * b32 + a30 * b33,
+                a01 * b30 + a11 * b31 + a21 * b32 + a31 * b33,
+                a02 * b30 + a12 * b31 + a22 * b32 + a32 * b33,
+                a03 * b30 + a13 * b31 + a23 * b32 + a33 * b33,
+            ],
+        }
     }
 
     pub fn transform(self, v: Vec4) -> Vec4 {

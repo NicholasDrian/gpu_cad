@@ -6,7 +6,7 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    pub fn dot(a: Vec3, b: Vec3) -> Vec3 {
+    pub fn dot(a: &Vec3, b: &Vec3) -> Vec3 {
         Vec3 {
             x: a.x * b.x,
             y: a.y * b.y,
@@ -14,7 +14,7 @@ impl Vec3 {
         }
     }
 
-    pub fn cross(a: Vec3, b: Vec3) -> Vec3 {
+    pub fn cross(a: &Vec3, b: &Vec3) -> Vec3 {
         Vec3 {
             x: a.y * b.z - a.z * b.y,
             y: a.z * b.x - a.x * b.z,

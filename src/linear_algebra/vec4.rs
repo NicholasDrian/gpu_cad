@@ -1,4 +1,4 @@
-#[derive(Debug, Copy, Clone, Default)]
+#[derive(Debug, Copy, Clone, Default, PartialEq)]
 pub struct Vec4 {
     pub x: f32,
     pub y: f32,
@@ -7,7 +7,7 @@ pub struct Vec4 {
 }
 
 impl Vec4 {
-    pub fn dot(a: Vec4, b: Vec4) -> Vec4 {
+    pub fn dot(a: &Vec4, b: &Vec4) -> Vec4 {
         Vec4 {
             x: a.x * b.x,
             y: a.y * b.y,

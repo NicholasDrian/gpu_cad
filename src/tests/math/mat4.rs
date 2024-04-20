@@ -27,7 +27,6 @@ fn test_mul() {
     };
     assert_eq!(Mat4::multiply(&m_i, &m_a), m_a);
     assert_eq!(Mat4::multiply(&m_a, &m_i), m_a);
-
     assert_eq!(Mat4::multiply(&m_a, &m_b), m_ab);
 }
 

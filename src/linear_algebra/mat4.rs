@@ -1,5 +1,7 @@
 use crate::linear_algebra::vec4::Vec4;
 
+use super::vec3::Vec3;
+
 /// column major 4x4 matrix.
 #[derive(Debug, PartialEq, Copy, Clone, Default)]
 pub struct Mat4 {
@@ -13,6 +15,46 @@ impl Mat4 {
                 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0,
             ],
         }
+    }
+
+    pub fn translation(t: &Vec3) -> Mat4 {
+        todo!();
+    }
+
+    pub fn rotation(axis: &Vec3, theta: f32) -> Mat4 {
+        todo!();
+        /*
+            let x = axis.x;
+          let y = axis.y;
+          let z = axis.z;
+          const n = Math.sqrt(x * x + y * y + z * z);
+          x /= n;
+          y /= n;
+          z /= n;
+          const xx = x * x;
+          const yy = y * y;
+          const zz = z * z;
+          const c = Math.cos(angleInRadians);
+          const s = Math.sin(angleInRadians);
+          const oneMinusCosine = 1 - c;
+
+          dst[ 0] = xx + (1 - xx) * c;
+          dst[ 1] = x * y * oneMinusCosine + z * s;
+          dst[ 2] = x * z * oneMinusCosine - y * s;
+          dst[ 3] = 0;
+          dst[ 4] = x * y * oneMinusCosine - z * s;
+          dst[ 5] = yy + (1 - yy) * c;
+          dst[ 6] = y * z * oneMinusCosine + x * s;
+          dst[ 7] = 0;
+          dst[ 8] = x * z * oneMinusCosine + y * s;
+          dst[ 9] = y * z * oneMinusCosine - x * s;
+          dst[10] = zz + (1 - zz) * c;
+          dst[11] = 0;
+          dst[12] = 0;
+          dst[13] = 0;
+          dst[14] = 0;
+          dst[15] = 1;
+        */
     }
 
     pub fn multiply(a: &Mat4, b: &Mat4) -> Mat4 {

@@ -1,4 +1,4 @@
-use super::plane::Plane;
+use super::{plane::Plane, vec4::Vec4};
 
 #[derive(Debug, Copy, Clone, Default, PartialEq)]
 pub struct Vec3 {
@@ -8,12 +8,8 @@ pub struct Vec3 {
 }
 
 impl Vec3 {
-    pub fn dot(a: &Vec3, b: &Vec3) -> Vec3 {
-        Vec3 {
-            x: a.x * b.x,
-            y: a.y * b.y,
-            z: a.z * b.z,
-        }
+    pub fn dot(a: &Vec3, b: &Vec3) -> f32 {
+        a.x * b.x + a.y * b.y + a.z * b.z
     }
 
     pub fn cross(a: &Vec3, b: &Vec3) -> Vec3 {
@@ -40,11 +36,21 @@ impl Vec3 {
         }
     }
 
+    pub fn append(&self, n: f32) -> Vec4 {
+        Vec4 {
+            x: self.x,
+            y: self.y,
+            z: self.z,
+            w: n,
+        }
+    }
+
     pub fn rotate(v: &Vec3, plane: &Plane, theta: f32) -> Vec3 {
         let mut res = Vec3::subtract(v, &plane.origin);
 
         // rotate a around b theta rads
         // res =
+        todo!();
 
         res = Vec3::add(&res, &plane.origin);
         res
@@ -86,5 +92,11 @@ impl Vec3 {
 
     pub fn len(&self) -> f32 {
         f32::sqrt(self.x * self.x + self.y * self.y + self.z * self.z)
+    }
+
+    pub fn scale(&mut self, s: f32) {
+        self.x *= s;
+        self.y *= s;
+        self.z *= s;
     }
 }

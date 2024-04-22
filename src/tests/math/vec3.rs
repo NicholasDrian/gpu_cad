@@ -16,12 +16,7 @@ pub fn test_dot() {
         y: 5.0,
         z: 6.0,
     };
-    let ab = Vec3 {
-        x: 4.0,
-        y: 10.0,
-        z: 18.0,
-    };
-    assert_eq!(Vec3::dot(&a, &b), ab);
+    assert_eq!(Vec3::dot(&a, &b), 32.0);
 }
 
 #[wasm_bindgen_test]

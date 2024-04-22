@@ -1,4 +1,4 @@
-use super::{ray::Ray, vec3::Vec3};
+use super::{mat4::Mat4, ray::Ray, vec3::Vec3};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Frustum {
@@ -22,15 +22,55 @@ impl Frustum {
             *Vec3::cross(bottom_right.get_direction(), bottom_left.get_direction()).normalize();
         let left = *Vec3::cross(bottom_left.get_direction(), top_left.get_direction()).normalize();
         Frustum {
-            origin: top_left.get_origin().clone(),
+            origin: *top_left.get_origin(),
             up,
             right,
             down,
             left,
-            top_left: top_left.get_direction().clone(),
-            top_right: top_right.get_direction().clone(),
-            bottom_left: bottom_left.get_direction().clone(),
-            bottom_right: bottom_right.get_direction().clone(),
+            top_left: *top_left.get_direction(),
+            top_right: *top_right.get_direction(),
+            bottom_left: *bottom_left.get_direction(),
+            bottom_right: *bottom_right.get_direction(),
         }
+    }
+    pub fn contains_point(&self, point: &Vec3) -> bool {
+        let v = Vec3::subtract(point, &self.origin);
+        Vec3::dot(&self.up, &v) > 0.0
+            || Vec3::dot(&self.right, &v) > 0.0
+            || Vec3::dot(&self.down, &v) > 0.0
+            || Vec3::dot(&self.left, &v) > 0.0
+    }
+
+    pub fn transform(&mut self, t: Mat4) -> &mut Self {
+        self.origin = t.transform_point(&self.origin);
+        self.top_left = t.transform_vector(&self.top_left);
+        self.top_right = t.transform_vector(&self.top_right);
+        self.bottom_right = t.transform_vector(&self.bottom_right);
+        self.bottom_left = t.transform_vector(&self.bottom_left);
+
+        let forward = Vec3::add(
+            &self.top_left,
+            &Vec3::add(
+                &self.top_right,
+                &Vec3::add(&self.bottom_left, &self.bottom_right),
+            ),
+        );
+
+        self.up = *Vec3::cross(&self.top_left, &self.top_right).normalize();
+        self.right = *Vec3::cross(&self.top_right, &self.bottom_right).normalize();
+        self.down = *Vec3::cross(&self.bottom_right, &self.bottom_left).normalize();
+        self.left = *Vec3::cross(&self.bottom_left, &self.top_left).normalize();
+
+        if Vec3::dot(&self.up, &forward) < 0.0 {
+            self.up.scale(-1.0);
+            self.down.scale(-1.0);
+        }
+
+        if Vec3::dot(&self.left, &forward) < 0.0 {
+            self.left.scale(-1.0);
+            self.right.scale(-1.0);
+        }
+
+        self
     }
 }

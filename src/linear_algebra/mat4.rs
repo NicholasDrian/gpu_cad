@@ -139,4 +139,32 @@ impl Mat4 {
             w: v.x * v30 + v.y * v31 + v.z * v32 + v.w * v33,
         }
     }
+
+    pub fn transform_point(&self, p: &Vec3) -> Vec3 {
+        let temp = self.transform(&Vec4 {
+            x: p.x,
+            y: p.y,
+            z: p.z,
+            w: 1.0,
+        });
+        Vec3 {
+            x: temp.x / temp.w,
+            y: temp.y / temp.w,
+            z: temp.z / temp.w,
+        }
+    }
+
+    pub fn transform_vector(&self, v: &Vec3) -> Vec3 {
+        let temp = self.transform(&Vec4 {
+            x: v.x,
+            y: v.y,
+            z: v.z,
+            w: 0.0,
+        });
+        Vec3 {
+            x: temp.x / temp.w,
+            y: temp.y / temp.w,
+            z: temp.z / temp.w,
+        }
+    }
 }

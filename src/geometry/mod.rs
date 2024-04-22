@@ -1,2 +1,2 @@
-// thik about this.....
-pub mod vertex;
+pub mod curve;
+pub mod surface;

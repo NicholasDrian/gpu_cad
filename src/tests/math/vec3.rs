@@ -1,10 +1,8 @@
-use std::f32::EPSILON;
-
 use wasm_bindgen_test::*;
 
 wasm_bindgen_test::wasm_bindgen_test_configure!(run_in_browser);
 
-use crate::linear_algebra::vec3::*;
+use crate::linear_algebra::{utils::TINY_FLOAT, vec3::*};
 
 #[wasm_bindgen_test]
 pub fn test_dot() {
@@ -58,9 +56,8 @@ pub fn test_normalize() {
         y: 0.2,
         z: 0.3,
     };
-    let epsilon = 0.99999;
-    assert!((a.normalize().len() - 1.0).abs() < epsilon);
-    assert!((b.normalize().len() - 1.0).abs() < epsilon);
+    assert!((a.normalize().len() - 1.0).abs() < TINY_FLOAT);
+    assert!((b.normalize().len() - 1.0).abs() < TINY_FLOAT);
 }
 
 #[wasm_bindgen_test]
@@ -75,7 +72,6 @@ pub fn test_len() {
         y: 0.0,
         z: 0.0,
     };
-    let epsilon = 0.99999;
-    assert!((a.len() - (3.0f32).sqrt()).abs() < epsilon);
-    assert!(b.len().abs() < epsilon);
+    assert!((a.len() - (3.0f32).sqrt()).abs() < TINY_FLOAT);
+    assert!(b.len().abs() < TINY_FLOAT);
 }

@@ -1,3 +1,5 @@
+use crate::linear_algebra::vec4::Vec4;
+
 pub struct Curve {
     weighted_controls: Vec<Vec4>,
     knots: Vec<f32>,

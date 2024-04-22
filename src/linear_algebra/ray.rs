@@ -19,4 +19,8 @@ impl Ray {
     pub fn get_direction(&self) -> &Vec3 {
         &self.direction
     }
+
+    pub fn intersect_plane(plane_origin: &Vec3, plane_normal: &Vec3) -> Option<f32> {
+        todo!();
+    }
 }

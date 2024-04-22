@@ -41,6 +41,22 @@ impl Frustum {
             || Vec3::dot(&self.left, &v) > 0.0
     }
 
+    pub fn contains_line_fully(&self, start: &Vec3, end: &Vec3) -> bool {
+        self.contains_point(start) && self.contains_point(end)
+    }
+
+    pub fn contains_line_partially(&self, start: &Vec3, end: &Vec3) -> bool {
+        let mut dir = Vec3::subtract(end, start);
+        let len = dir.len();
+        dir.scale(1.0 / len);
+
+        let ray = Ray::new(*start, dir);
+
+        todo!();
+
+        true
+    }
+
     pub fn transform(&mut self, t: Mat4) -> &mut Self {
         self.origin = t.transform_point(&self.origin);
         self.top_left = t.transform_vector(&self.top_left);

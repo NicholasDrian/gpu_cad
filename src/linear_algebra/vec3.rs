@@ -1,4 +1,4 @@
-use super::{plane::Plane, vec4::Vec4};
+use super::vec4::Vec4;
 
 #[derive(Debug, Copy, Clone, Default, PartialEq)]
 pub struct Vec3 {
@@ -45,15 +45,8 @@ impl Vec3 {
         }
     }
 
-    pub fn rotate(v: &Vec3, plane: &Plane, theta: f32) -> Vec3 {
-        let mut res = Vec3::subtract(v, &plane.origin);
-
-        // rotate a around b theta rads
-        // res =
+    pub fn rotate(v: &Vec3, center: &Vec3, axis: &Vec3, theta: f32) -> Vec3 {
         todo!();
-
-        res = Vec3::add(&res, &plane.origin);
-        res
     }
 
     pub fn normalize(&mut self) -> &mut Self {

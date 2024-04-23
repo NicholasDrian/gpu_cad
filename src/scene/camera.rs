@@ -133,8 +133,6 @@ impl Camera {
     fn update_view_proj(&mut self) {
         let view = Mat4::look_at(&self.position, &self.focal_point, &self.up);
         let proj = Mat4::perspective(self.fovy, self.aspect, self.near_dist, self.far_dist);
-        log::warn!("view {:?}", view);
-        log::warn!("proj {:?}", proj);
         self.view_proj = Some(Mat4::multiply(&proj, &view));
     }
 }

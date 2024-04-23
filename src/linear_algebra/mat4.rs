@@ -87,39 +87,33 @@ impl Mat4 {
     }
 
     pub fn rotation(axis: &Vec3, theta: f32) -> Mat4 {
-        todo!();
-        /*
-            let x = axis.x;
-          let y = axis.y;
-          let z = axis.z;
-          const n = Math.sqrt(x * x + y * y + z * z);
-          x /= n;
-          y /= n;
-          z /= n;
-          const xx = x * x;
-          const yy = y * y;
-          const zz = z * z;
-          const c = Math.cos(angleInRadians);
-          const s = Math.sin(angleInRadians);
-          const oneMinusCosine = 1 - c;
-
-          dst[ 0] = xx + (1 - xx) * c;
-          dst[ 1] = x * y * oneMinusCosine + z * s;
-          dst[ 2] = x * z * oneMinusCosine - y * s;
-          dst[ 3] = 0;
-          dst[ 4] = x * y * oneMinusCosine - z * s;
-          dst[ 5] = yy + (1 - yy) * c;
-          dst[ 6] = y * z * oneMinusCosine + x * s;
-          dst[ 7] = 0;
-          dst[ 8] = x * z * oneMinusCosine + y * s;
-          dst[ 9] = y * z * oneMinusCosine - x * s;
-          dst[10] = zz + (1 - zz) * c;
-          dst[11] = 0;
-          dst[12] = 0;
-          dst[13] = 0;
-          dst[14] = 0;
-          dst[15] = 1;
-        */
+        let normalized_axis = axis.to_normalized();
+        let xx = normalized_axis.x * normalized_axis.x;
+        let yy = normalized_axis.y * normalized_axis.y;
+        let zz = normalized_axis.z * normalized_axis.z;
+        let cos = f32::cos(theta);
+        let sin = f32::sin(theta);
+        let one_minus_cosine = 1.0 - cos;
+        Mat4 {
+            nums: [
+                xx + (1.0 - xx) * cos,
+                normalized_axis.x * normalized_axis.y * one_minus_cosine + normalized_axis.z * sin,
+                normalized_axis.x * normalized_axis.z * one_minus_cosine - normalized_axis.y * sin,
+                0.0,
+                normalized_axis.x * normalized_axis.y * one_minus_cosine - normalized_axis.z * sin,
+                yy + (1.0 - yy) * cos,
+                normalized_axis.y * normalized_axis.z * one_minus_cosine + normalized_axis.x * sin,
+                0.0,
+                normalized_axis.x * normalized_axis.z * one_minus_cosine + normalized_axis.y * sin,
+                normalized_axis.y * normalized_axis.z * one_minus_cosine - normalized_axis.x * sin,
+                zz + (1.0 - zz) * cos,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                1.0,
+            ],
+        }
     }
 
     pub fn multiply(a: &Mat4, b: &Mat4) -> Mat4 {
@@ -139,7 +133,6 @@ impl Mat4 {
         let a31 = a.nums[13];
         let a32 = a.nums[14];
         let a33 = a.nums[15];
-
         let b00 = b.nums[0];
         let b01 = b.nums[1];
         let b02 = b.nums[2];

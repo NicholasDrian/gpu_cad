@@ -3,7 +3,8 @@ use crate::linear_algebra::vec4::Vec4;
 use super::vec3::Vec3;
 
 /// column major 4x4 matrix.
-#[derive(Debug, PartialEq, Copy, Clone, Default)]
+#[repr(C)]
+#[derive(Debug, PartialEq, Copy, Clone, Default, bytemuck::Zeroable, bytemuck::Pod)]
 pub struct Mat4 {
     pub nums: [f32; 16],
 }
@@ -17,8 +18,72 @@ impl Mat4 {
         }
     }
 
+    pub fn look_at(position: &Vec3, focal_point: &Vec3, up: &Vec3) -> Mat4 {
+        // Z Axis is forward, not up
+        let z_axis = *Vec3::subtract(position, focal_point).normalize();
+        let x_axis = *Vec3::cross(up, &z_axis).normalize();
+        let y_axis = Vec3::cross(&z_axis, &x_axis);
+        Mat4 {
+            nums: [
+                x_axis.x,
+                y_axis.x,
+                z_axis.x,
+                0.0,
+                x_axis.y,
+                y_axis.y,
+                z_axis.y,
+                0.0,
+                x_axis.z,
+                y_axis.z,
+                z_axis.z,
+                0.0,
+                -Vec3::dot(&x_axis, position),
+                -Vec3::dot(&y_axis, position),
+                -Vec3::dot(&z_axis, position),
+                1.0,
+            ],
+        }
+    }
+
+    /// z_far can be infinity
+    pub fn perspective(fovy: f32, aspect: f32, near_dist: f32, far_dist: f32) -> Mat4 {
+        let temp = f32::tan((std::f32::consts::PI - fovy) / 2.0);
+        Mat4 {
+            nums: [
+                temp / aspect,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                temp,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                if far_dist == f32::INFINITY {
+                    -1.0
+                } else {
+                    far_dist / (near_dist - far_dist)
+                },
+                -1.0,
+                0.0,
+                0.0,
+                if far_dist == f32::INFINITY {
+                    -near_dist
+                } else {
+                    far_dist * near_dist / (near_dist - far_dist)
+                },
+                0.0,
+            ],
+        }
+    }
+
     pub fn translation(t: &Vec3) -> Mat4 {
-        todo!();
+        Mat4 {
+            nums: [
+                1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, t.x, t.y, t.z, 1.0,
+            ],
+        }
     }
 
     pub fn rotation(axis: &Vec3, theta: f32) -> Mat4 {

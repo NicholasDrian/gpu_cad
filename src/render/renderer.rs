@@ -2,6 +2,11 @@ use winit::{event::*, window::Window};
 
 use wgpu::util::DeviceExt;
 
+use crate::{
+    linear_algebra::{mat4::Mat4, vec3::Vec3},
+    scene::camera::{Camera, CameraType},
+};
+
 #[repr(C)]
 #[derive(Copy, Clone, Debug, bytemuck::Pod, bytemuck::Zeroable)]
 struct Vertex {
@@ -55,6 +60,14 @@ const VERTICES: &[Vertex] = &[
 
 const INDICES: &[u16] = &[0, 1, 4, 1, 2, 4, 2, 3, 4, /* padding */ 0];
 
+// We need this for Rust to store our data correctly for the shaders
+#[repr(C)]
+// This is so we can store this in a buffer
+#[derive(Debug, Copy, Clone, bytemuck::Pod, bytemuck::Zeroable)]
+pub struct SceneUniforms {
+    view_proj: Mat4,
+}
+
 pub struct Renderer {
     surface: wgpu::Surface,
     device: wgpu::Device,
@@ -62,6 +75,7 @@ pub struct Renderer {
     config: wgpu::SurfaceConfiguration,
     size: winit::dpi::PhysicalSize<u32>,
     render_pipeline: wgpu::RenderPipeline,
+    scene_bind_group: wgpu::BindGroup,
     vertex_buffer: wgpu::Buffer,
     index_buffer: wgpu::Buffer,
     num_indices: u32,
@@ -138,10 +152,81 @@ impl Renderer {
             source: wgpu::ShaderSource::Wgsl(include_str!("shaders/shader.wgsl").into()),
         });
 
+        let vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("Vertex Buffer"),
+            contents: bytemuck::cast_slice(VERTICES),
+            usage: wgpu::BufferUsages::VERTEX,
+        });
+        let index_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("Index Buffer"),
+            contents: bytemuck::cast_slice(INDICES),
+            usage: wgpu::BufferUsages::INDEX,
+        });
+        let num_indices = INDICES.len() as u32;
+
+        let scene_bind_group_layout =
+            device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+                entries: &[wgpu::BindGroupLayoutEntry {
+                    binding: 0,
+                    visibility: wgpu::ShaderStages::VERTEX,
+                    ty: wgpu::BindingType::Buffer {
+                        ty: wgpu::BufferBindingType::Uniform,
+                        has_dynamic_offset: false,
+                        min_binding_size: None,
+                    },
+                    count: None,
+                }],
+                label: Some("scene bind group"),
+            });
+
+        let mut camera = Camera::new(
+            Vec3 {
+                x: 0.0,
+                y: 0.0,
+                z: -10.0,
+            },
+            Vec3 {
+                x: 0.0,
+                y: 0.0,
+                z: 0.0,
+            },
+            Vec3 {
+                x: 0.0,
+                y: 1.0,
+                z: 0.0,
+            },
+            1.0,
+            1.0,
+            0.01,
+            f32::INFINITY,
+            CameraType::CAD,
+        );
+
+        let view_proj = camera.get_view_proj();
+
+        log::warn!("{:?}", view_proj);
+
+        let scene_uniforms = SceneUniforms { view_proj };
+
+        let view_proj_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
+            label: Some("view_proj_buffer"),
+            contents: bytemuck::cast_slice(&[scene_uniforms]),
+            usage: wgpu::BufferUsages::UNIFORM,
+        });
+
+        let scene_bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
+            label: Some("scene bind group"),
+            layout: &scene_bind_group_layout,
+            entries: &[wgpu::BindGroupEntry {
+                binding: 0,
+                resource: view_proj_buffer.as_entire_binding(),
+            }],
+        });
+
         let render_pipeline_layout =
             device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
                 label: Some("Render Pipeline Layout"),
-                bind_group_layouts: &[],
+                bind_group_layouts: &[&scene_bind_group_layout],
                 push_constant_ranges: &[],
             });
 
@@ -189,18 +274,6 @@ impl Renderer {
             multiview: None,
         });
 
-        let vertex_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-            label: Some("Vertex Buffer"),
-            contents: bytemuck::cast_slice(VERTICES),
-            usage: wgpu::BufferUsages::VERTEX,
-        });
-        let index_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
-            label: Some("Index Buffer"),
-            contents: bytemuck::cast_slice(INDICES),
-            usage: wgpu::BufferUsages::INDEX,
-        });
-        let num_indices = INDICES.len() as u32;
-
         Self {
             surface,
             device,
@@ -208,6 +281,7 @@ impl Renderer {
             config,
             size,
             render_pipeline,
+            scene_bind_group,
             vertex_buffer,
             index_buffer,
             num_indices,
@@ -271,6 +345,7 @@ impl Renderer {
             render_pass.set_pipeline(&self.render_pipeline);
             render_pass.set_vertex_buffer(0, self.vertex_buffer.slice(..));
             render_pass.set_index_buffer(self.index_buffer.slice(..), wgpu::IndexFormat::Uint16);
+            render_pass.set_bind_group(0, &self.scene_bind_group, &[]);
             render_pass.draw_indexed(0..self.num_indices, 0, 0..1);
         }
 

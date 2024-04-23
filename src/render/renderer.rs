@@ -198,13 +198,11 @@ impl Renderer {
             1.0,
             1.0,
             0.01,
-            f32::INFINITY,
+            10000.0,
             CameraType::CAD,
         );
 
         let view_proj = camera.get_view_proj();
-
-        log::warn!("{:?}", view_proj);
 
         let scene_uniforms = SceneUniforms { view_proj };
 
@@ -254,7 +252,7 @@ impl Renderer {
                 topology: wgpu::PrimitiveTopology::TriangleList,
                 strip_index_format: None,
                 front_face: wgpu::FrontFace::Ccw,
-                cull_mode: Some(wgpu::Face::Back),
+                cull_mode: None,
                 // Setting this to anything other than Fill requires Features::POLYGON_MODE_LINE
                 // or Features::POLYGON_MODE_POINT
                 polygon_mode: wgpu::PolygonMode::Fill,

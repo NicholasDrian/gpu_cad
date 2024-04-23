@@ -1,4 +1,8 @@
-@group(0) @binding(0) var<uniform> model: mat4x4<f32>;
+@group(0) @binding(0) var<uniform> scene_uniforms: SceneUniforms;
+
+struct SceneUniforms {
+    @location(0) model_view: mat4x4<f32>,
+  }
 
 struct VertexInput {
     @location(0) position: vec3<f32>,
@@ -16,7 +20,7 @@ fn vs_main(
 ) -> VertexOutput {
     var out: VertexOutput;
     out.color = in.color;
-    out.clip_position = model * vec4<f32>(in.position, 1.0);
+    out.clip_position = scene_uniforms.model_view * vec4<f32>(in.position, 1.0);
     return out;
 }
 

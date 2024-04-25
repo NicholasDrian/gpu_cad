@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::geometry::{curve::Curve, surface::Surface};
 
-use super::camera::Camera;
+use super::{camera::Camera, camera_descriptor::CameraDescriptor};
 
 pub type UUID = u32;
 
@@ -25,6 +25,11 @@ impl Default for Scene {
 impl Scene {
     pub fn get_camera(&self) -> &Camera {
         &self.camera
+    }
+
+    pub fn set_camera(&mut self, descriptor: CameraDescriptor) -> &mut Self {
+        self.camera = Camera::new(descriptor);
+        self
     }
 
     pub fn tick(&mut self) {

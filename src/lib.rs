@@ -7,7 +7,14 @@ pub mod widgets;
 #[cfg(test)]
 pub mod tests;
 
+#[macro_use]
+extern crate lazy_static;
+
+use std::collections::HashMap;
+use std::sync::Mutex;
+
 use render::renderer::Renderer;
+use scene::handles::{new_handle, Handle};
 use scene::scene::Scene;
 use wasm_bindgen::prelude::*;
 use winit::dpi::PhysicalSize;
@@ -18,6 +25,19 @@ use winit::{
     event_loop::{ControlFlow, EventLoop},
     window::WindowBuilder,
 };
+
+lazy_static! {
+    static ref SCENES: Mutex<HashMap<Handle, Scene>> = Mutex::new(HashMap::new());
+}
+
+#[wasm_bindgen]
+pub fn new_scene() -> Handle {
+    let handle = new_handle();
+    let scene = Scene::default();
+    let mut scenes_changer = SCENES.lock().unwrap();
+    (*scenes_changer).insert(handle, scene);
+    handle
+}
 
 #[wasm_bindgen]
 extern "C" {

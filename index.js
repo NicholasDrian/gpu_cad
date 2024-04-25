@@ -1,4 +1,7 @@
-import { greet, code_that_throws, run } from './pkg';
+import { new_scene, greet, code_that_throws, run } from './pkg';
+
+let scene_handle = new_scene();
+console.log(scene_handle);
 
 let res = greet('World');
 console.log(res);

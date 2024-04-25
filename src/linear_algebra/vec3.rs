@@ -1,5 +1,8 @@
 use super::vec4::Vec4;
 
+use wasm_bindgen::prelude::*;
+
+#[wasm_bindgen]
 #[derive(Debug, Copy, Clone, Default, PartialEq)]
 pub struct Vec3 {
     pub x: f32,
@@ -7,6 +10,7 @@ pub struct Vec3 {
     pub z: f32,
 }
 
+#[wasm_bindgen]
 impl Vec3 {
     pub fn dot(a: &Vec3, b: &Vec3) -> f32 {
         a.x * b.x + a.y * b.y + a.z * b.z
@@ -49,20 +53,18 @@ impl Vec3 {
         todo!();
     }
 
-    pub fn normalize(&mut self) -> &mut Self {
+    pub fn normalize(&mut self) {
         let size_square = self.x * self.x + self.y * self.y + self.z * self.z;
         if size_square == 0.0 {
             self.x = 1.0;
             self.y = 0.0;
             self.z = 0.0;
             log::warn!("sketch");
-            return self;
         }
         let size = size_square.sqrt();
         self.x /= size;
         self.y /= size;
         self.z /= size;
-        self
     }
 
     pub fn to_normalized(&self) -> Vec3 {

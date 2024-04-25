@@ -2,6 +2,7 @@ use crate::linear_algebra::vec3::*;
 
 use wasm_bindgen::prelude::*;
 
+#[wasm_bindgen]
 #[derive(Debug, Copy, Clone, Default, PartialEq)]
 pub struct Vec4 {
     pub x: f32,
@@ -10,6 +11,7 @@ pub struct Vec4 {
     pub w: f32,
 }
 
+#[wasm_bindgen]
 impl Vec4 {
     pub fn dot(a: &Vec4, b: &Vec4) -> Vec4 {
         Vec4 {

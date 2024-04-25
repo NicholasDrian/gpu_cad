@@ -4,10 +4,7 @@ use wgpu::util::DeviceExt;
 
 use crate::{
     linear_algebra::{mat4::Mat4, vec3::Vec3},
-    scene::{
-        camera::{Camera, CameraType},
-        scene::Scene,
-    },
+    scene::{camera::Camera, scene::Scene},
 };
 
 #[repr(C)]

@@ -41,18 +41,18 @@ pub fn test_cross() {
 
 #[wasm_bindgen_test]
 pub fn test_normalize() {
-    let mut a = Vec3 {
+    let a = Vec3 {
         x: 0.0,
         y: 0.0,
         z: 0.0,
     };
-    let mut b = Vec3 {
+    let b = Vec3 {
         x: 0.1,
         y: 0.2,
         z: 0.3,
     };
-    assert!((a.normalize().len() - 1.0).abs() < TINY_FLOAT);
-    assert!((b.normalize().len() - 1.0).abs() < TINY_FLOAT);
+    assert!((a.to_normalized().len() - 1.0).abs() < TINY_FLOAT);
+    assert!((b.to_normalized().len() - 1.0).abs() < TINY_FLOAT);
 }
 
 #[wasm_bindgen_test]

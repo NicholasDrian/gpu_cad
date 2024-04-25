@@ -2,14 +2,7 @@ use std::time::Instant;
 
 use crate::linear_algebra::{mat4::Mat4, vec3::*};
 
-pub enum CameraType {
-    /// This is a first person shooter style camera.
-    /// Rotation is around the cameras position
-    FPS,
-    /// This is a CAD style camera.
-    /// Rotation is around the focal point
-    CAD,
-}
+use super::camera_descriptor::{CameraDescriptor, CameraType};
 
 pub struct Camera {
     position: Vec3,
@@ -38,54 +31,24 @@ pub struct Camera {
 
 impl Default for Camera {
     fn default() -> Camera {
-        Camera::new(
-            Vec3 {
-                x: 0.0,
-                y: 1.0,
-                z: -10.0,
-            },
-            Vec3 {
-                x: 0.0,
-                y: 0.0,
-                z: 0.0,
-            },
-            Vec3 {
-                x: 0.0,
-                y: 1.0,
-                z: 0.0,
-            },
-            1.0,
-            1.0,
-            0.01,
-            10000.0,
-            CameraType::CAD,
-        )
+        Camera::new(CameraDescriptor::default())
     }
 }
 
 pub type Radians = f32;
 
 impl Camera {
-    pub fn new(
-        position: Vec3,
-        focal_point: Vec3,
-        up: Vec3,
-        fovy: f32,
-        aspect: f32,
-        near_dist: f32,
-        far_dist: f32,
-        camera_type: CameraType,
-    ) -> Self {
+    pub fn new(params: CameraDescriptor) -> Self {
         let mut res = Self {
-            position,
-            focal_point,
-            fovy,
-            aspect,
-            near_dist,
-            far_dist,
-            up,
+            position: params.position,
+            focal_point: params.focal_point,
+            fovy: params.fovy,
+            aspect: params.aspect,
+            near_dist: params.near_dist,
+            far_dist: params.far_dist,
+            up: params.up,
+            camera_type: params.camera_type,
             view_proj: Mat4::identity(),
-            camera_type,
             last_frame_time: None,
             is_turning_right: false,
             is_turning_left: false,

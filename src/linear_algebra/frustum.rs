@@ -80,10 +80,10 @@ impl Frustum {
             ),
         );
 
-        self.up = *Vec3::cross(&self.top_left, &self.top_right).normalize();
-        self.right = *Vec3::cross(&self.top_right, &self.bottom_right).normalize();
-        self.down = *Vec3::cross(&self.bottom_right, &self.bottom_left).normalize();
-        self.left = *Vec3::cross(&self.bottom_left, &self.top_left).normalize();
+        self.up = Vec3::cross(&self.top_left, &self.top_right).to_normalized();
+        self.right = Vec3::cross(&self.top_right, &self.bottom_right).to_normalized();
+        self.down = Vec3::cross(&self.bottom_right, &self.bottom_left).to_normalized();
+        self.left = Vec3::cross(&self.bottom_left, &self.top_left).to_normalized();
 
         if Vec3::dot(&self.up, &forward) < 0.0 {
             self.up.scale(-1.0);

@@ -8,6 +8,7 @@ pub mod widgets;
 pub mod tests;
 
 use render::renderer::Renderer;
+use scene::scene::Scene;
 use wasm_bindgen::prelude::*;
 use winit::dpi::PhysicalSize;
 use winit::platform::web::WindowExtWebSys;
@@ -99,8 +100,7 @@ pub async fn run() {
                 }
             }
             Event::RedrawRequested(window_id) if window_id == renderer.window().id() => {
-                renderer.update();
-                match renderer.render() {
+                match renderer.render(&Scene::default()) {
                     Ok(_) => {}
                     // Reconfigure the surface if it's lost or outdated
                     Err(wgpu::SurfaceError::Lost | wgpu::SurfaceError::Outdated) => {

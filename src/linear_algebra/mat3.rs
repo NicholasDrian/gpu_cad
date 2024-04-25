@@ -54,7 +54,6 @@ impl Mat3 {
     }
 
     pub fn transform(self, v: &Vec3) -> Vec3 {
-
         let a00 = self.nums[0];
         let a01 = self.nums[1];
         let a02 = self.nums[2];

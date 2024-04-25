@@ -1,3 +1,4 @@
+pub mod bounding_box;
 pub mod frustum;
 pub mod mat3;
 pub mod mat4;

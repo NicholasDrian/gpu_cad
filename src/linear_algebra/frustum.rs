@@ -1,4 +1,4 @@
-use super::{mat4::Mat4, ray::Ray, vec3::Vec3};
+use super::{bounding_box::BoundingBox, mat4::Mat4, ray::Ray, vec3::Vec3};
 
 #[derive(Debug, Copy, Clone)]
 pub struct Frustum {
@@ -15,12 +15,13 @@ pub struct Frustum {
 
 impl Frustum {
     pub fn new(top_left: &Ray, top_right: &Ray, bottom_right: &Ray, bottom_left: &Ray) -> Frustum {
-        let up = *Vec3::cross(top_left.get_direction(), top_right.get_direction()).normalize();
+        let up = Vec3::cross(top_left.get_direction(), top_right.get_direction()).to_normalized();
         let right =
-            *Vec3::cross(top_right.get_direction(), bottom_right.get_direction()).normalize();
+            Vec3::cross(top_right.get_direction(), bottom_right.get_direction()).to_normalized();
         let down =
-            *Vec3::cross(bottom_right.get_direction(), bottom_left.get_direction()).normalize();
-        let left = *Vec3::cross(bottom_left.get_direction(), top_left.get_direction()).normalize();
+            Vec3::cross(bottom_right.get_direction(), bottom_left.get_direction()).to_normalized();
+        let left =
+            Vec3::cross(bottom_left.get_direction(), top_left.get_direction()).to_normalized();
         Frustum {
             origin: *top_left.get_origin(),
             up,
@@ -55,6 +56,13 @@ impl Frustum {
         todo!();
 
         true
+    }
+
+    pub fn contains_bounding_box_fully(bb: BoundingBox) -> bool {
+        todo!();
+    }
+    pub fn contains_bounding_box_partially(bb: BoundingBox) -> bool {
+        todo!();
     }
 
     pub fn transform(&mut self, t: Mat4) -> &mut Self {

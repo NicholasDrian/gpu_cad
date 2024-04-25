@@ -2,46 +2,101 @@ use crate::linear_algebra::vec4::Vec4;
 
 use super::vec3::Vec3;
 
+use wasm_bindgen::prelude::*;
+
 /// column major 4x4 matrix.
+///
+/// |a e i m|
+/// |b f j n|
+/// |c g k o|
+/// |d h l p|
+///
 #[repr(C)]
 #[derive(Debug, PartialEq, Copy, Clone, Default, bytemuck::Zeroable, bytemuck::Pod)]
 pub struct Mat4 {
-    pub nums: [f32; 16],
+    pub a: f32,
+    pub b: f32,
+    pub c: f32,
+    pub d: f32,
+    pub e: f32,
+    pub f: f32,
+    pub g: f32,
+    pub h: f32,
+    pub i: f32,
+    pub j: f32,
+    pub k: f32,
+    pub l: f32,
+    pub m: f32,
+    pub n: f32,
+    pub o: f32,
+    pub p: f32,
 }
 
 impl Mat4 {
+    pub fn new(nums: &[f32; 16]) -> Mat4 {
+        Mat4 {
+            a: nums[0],
+            b: nums[1],
+            c: nums[2],
+            d: nums[3],
+            e: nums[4],
+            f: nums[5],
+            g: nums[6],
+            h: nums[7],
+            i: nums[8],
+            j: nums[9],
+            k: nums[10],
+            l: nums[11],
+            m: nums[12],
+            n: nums[13],
+            o: nums[14],
+            p: nums[15],
+        }
+    }
+
     pub fn identity() -> Mat4 {
         Mat4 {
-            nums: [
-                1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0,
-            ],
+            a: 1.0,
+            b: 0.0,
+            c: 0.0,
+            d: 0.0,
+            e: 0.0,
+            f: 1.0,
+            g: 0.0,
+            h: 0.0,
+            i: 0.0,
+            j: 0.0,
+            k: 1.0,
+            l: 0.0,
+            m: 0.0,
+            n: 0.0,
+            o: 0.0,
+            p: 1.0,
         }
     }
 
     pub fn look_at(position: &Vec3, focal_point: &Vec3, up: &Vec3) -> Mat4 {
         // Z Axis is forward, not up
-        let z_axis = *Vec3::subtract(position, focal_point).normalize();
-        let x_axis = *Vec3::cross(up, &z_axis).normalize();
+        let z_axis = Vec3::subtract(position, focal_point).to_normalized();
+        let x_axis = Vec3::cross(up, &z_axis).to_normalized();
         let y_axis = Vec3::cross(&z_axis, &x_axis);
         Mat4 {
-            nums: [
-                x_axis.x,
-                y_axis.x,
-                z_axis.x,
-                0.0,
-                x_axis.y,
-                y_axis.y,
-                z_axis.y,
-                0.0,
-                x_axis.z,
-                y_axis.z,
-                z_axis.z,
-                0.0,
-                -Vec3::dot(&x_axis, position),
-                -Vec3::dot(&y_axis, position),
-                -Vec3::dot(&z_axis, position),
-                1.0,
-            ],
+            a: x_axis.x,
+            b: y_axis.x,
+            c: z_axis.x,
+            d: 0.0,
+            e: x_axis.y,
+            f: y_axis.y,
+            g: z_axis.y,
+            h: 0.0,
+            i: x_axis.z,
+            j: y_axis.z,
+            k: z_axis.z,
+            l: 0.0,
+            m: -Vec3::dot(&x_axis, position),
+            n: -Vec3::dot(&y_axis, position),
+            o: -Vec3::dot(&z_axis, position),
+            p: 1.0,
         }
     }
 
@@ -49,40 +104,51 @@ impl Mat4 {
     pub fn perspective(fovy: f32, aspect: f32, near_dist: f32, far_dist: f32) -> Mat4 {
         let temp = f32::tan((std::f32::consts::PI - fovy) / 2.0);
         Mat4 {
-            nums: [
-                temp / aspect,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                temp,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                if far_dist == f32::INFINITY {
-                    -1.0
-                } else {
-                    far_dist / (near_dist - far_dist)
-                },
-                -1.0,
-                0.0,
-                0.0,
-                if far_dist == f32::INFINITY {
-                    -near_dist
-                } else {
-                    far_dist * near_dist / (near_dist - far_dist)
-                },
-                0.0,
-            ],
+            a: temp / aspect,
+            b: 0.0,
+            c: 0.0,
+            d: 0.0,
+            e: 0.0,
+            f: temp,
+            g: 0.0,
+            h: 0.0,
+            i: 0.0,
+            j: 0.0,
+            k: if far_dist == f32::INFINITY {
+                -1.0
+            } else {
+                far_dist / (near_dist - far_dist)
+            },
+            l: -1.0,
+            m: 0.0,
+            n: 0.0,
+            o: if far_dist == f32::INFINITY {
+                -near_dist
+            } else {
+                far_dist * near_dist / (near_dist - far_dist)
+            },
+            p: 0.0,
         }
     }
 
     pub fn translation(t: &Vec3) -> Mat4 {
         Mat4 {
-            nums: [
-                1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, t.x, t.y, t.z, 1.0,
-            ],
+            a: 1.0,
+            b: 0.0,
+            c: 0.0,
+            d: 0.0,
+            e: 0.0,
+            f: 1.0,
+            g: 0.0,
+            h: 0.0,
+            i: 0.0,
+            j: 0.0,
+            k: 1.0,
+            l: 0.0,
+            m: t.x,
+            n: t.y,
+            o: t.z,
+            p: 1.0,
         }
     }
 
@@ -95,100 +161,63 @@ impl Mat4 {
         let sin = f32::sin(theta);
         let one_minus_cosine = 1.0 - cos;
         Mat4 {
-            nums: [
-                xx + (1.0 - xx) * cos,
-                normalized_axis.x * normalized_axis.y * one_minus_cosine + normalized_axis.z * sin,
-                normalized_axis.x * normalized_axis.z * one_minus_cosine - normalized_axis.y * sin,
-                0.0,
-                normalized_axis.x * normalized_axis.y * one_minus_cosine - normalized_axis.z * sin,
-                yy + (1.0 - yy) * cos,
-                normalized_axis.y * normalized_axis.z * one_minus_cosine + normalized_axis.x * sin,
-                0.0,
-                normalized_axis.x * normalized_axis.z * one_minus_cosine + normalized_axis.y * sin,
-                normalized_axis.y * normalized_axis.z * one_minus_cosine - normalized_axis.x * sin,
-                zz + (1.0 - zz) * cos,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                1.0,
-            ],
+            a: xx + (1.0 - xx) * cos,
+            b: normalized_axis.x * normalized_axis.y * one_minus_cosine + normalized_axis.z * sin,
+            c: normalized_axis.x * normalized_axis.z * one_minus_cosine - normalized_axis.y * sin,
+            d: 0.0,
+            e: normalized_axis.x * normalized_axis.y * one_minus_cosine - normalized_axis.z * sin,
+            f: yy + (1.0 - yy) * cos,
+            g: normalized_axis.y * normalized_axis.z * one_minus_cosine + normalized_axis.x * sin,
+            h: 0.0,
+            i: normalized_axis.x * normalized_axis.z * one_minus_cosine + normalized_axis.y * sin,
+            j: normalized_axis.y * normalized_axis.z * one_minus_cosine - normalized_axis.x * sin,
+            k: zz + (1.0 - zz) * cos,
+            l: 0.0,
+            m: 0.0,
+            n: 0.0,
+            o: 0.0,
+            p: 1.0,
         }
     }
 
     pub fn multiply(a: &Mat4, b: &Mat4) -> Mat4 {
-        let a00 = a.nums[0];
-        let a01 = a.nums[1];
-        let a02 = a.nums[2];
-        let a03 = a.nums[3];
-        let a10 = a.nums[4];
-        let a11 = a.nums[5];
-        let a12 = a.nums[6];
-        let a13 = a.nums[7];
-        let a20 = a.nums[8];
-        let a21 = a.nums[9];
-        let a22 = a.nums[10];
-        let a23 = a.nums[11];
-        let a30 = a.nums[12];
-        let a31 = a.nums[13];
-        let a32 = a.nums[14];
-        let a33 = a.nums[15];
-        let b00 = b.nums[0];
-        let b01 = b.nums[1];
-        let b02 = b.nums[2];
-        let b03 = b.nums[3];
-        let b10 = b.nums[4];
-        let b11 = b.nums[5];
-        let b12 = b.nums[6];
-        let b13 = b.nums[7];
-        let b20 = b.nums[8];
-        let b21 = b.nums[9];
-        let b22 = b.nums[10];
-        let b23 = b.nums[11];
-        let b30 = b.nums[12];
-        let b31 = b.nums[13];
-        let b32 = b.nums[14];
-        let b33 = b.nums[15];
-
         Mat4 {
-            nums: [
-                a00 * b00 + a10 * b01 + a20 * b02 + a30 * b03,
-                a01 * b00 + a11 * b01 + a21 * b02 + a31 * b03,
-                a02 * b00 + a12 * b01 + a22 * b02 + a32 * b03,
-                a03 * b00 + a13 * b01 + a23 * b02 + a33 * b03,
-                a00 * b10 + a10 * b11 + a20 * b12 + a30 * b13,
-                a01 * b10 + a11 * b11 + a21 * b12 + a31 * b13,
-                a02 * b10 + a12 * b11 + a22 * b12 + a32 * b13,
-                a03 * b10 + a13 * b11 + a23 * b12 + a33 * b13,
-                a00 * b20 + a10 * b21 + a20 * b22 + a30 * b23,
-                a01 * b20 + a11 * b21 + a21 * b22 + a31 * b23,
-                a02 * b20 + a12 * b21 + a22 * b22 + a32 * b23,
-                a03 * b20 + a13 * b21 + a23 * b22 + a33 * b23,
-                a00 * b30 + a10 * b31 + a20 * b32 + a30 * b33,
-                a01 * b30 + a11 * b31 + a21 * b32 + a31 * b33,
-                a02 * b30 + a12 * b31 + a22 * b32 + a32 * b33,
-                a03 * b30 + a13 * b31 + a23 * b32 + a33 * b33,
-            ],
+            a: a.a * b.a + a.e * b.b + a.i * b.c + a.m * b.d,
+            b: a.b * b.a + a.f * b.b + a.j * b.c + a.n * b.d,
+            c: a.c * b.a + a.g * b.b + a.k * b.c + a.o * b.d,
+            d: a.d * b.a + a.h * b.b + a.l * b.c + a.p * b.d,
+            e: a.a * b.e + a.e * b.f + a.i * b.g + a.m * b.h,
+            f: a.b * b.e + a.f * b.f + a.j * b.g + a.n * b.h,
+            g: a.c * b.e + a.g * b.f + a.k * b.g + a.o * b.h,
+            h: a.d * b.e + a.h * b.f + a.l * b.g + a.p * b.h,
+            i: a.a * b.i + a.e * b.j + a.i * b.k + a.m * b.l,
+            j: a.b * b.i + a.f * b.j + a.j * b.k + a.n * b.l,
+            k: a.c * b.i + a.g * b.j + a.k * b.k + a.o * b.l,
+            l: a.d * b.i + a.h * b.j + a.l * b.k + a.p * b.l,
+            m: a.a * b.m + a.e * b.n + a.i * b.o + a.m * b.p,
+            n: a.b * b.m + a.f * b.n + a.j * b.o + a.n * b.p,
+            o: a.c * b.m + a.g * b.n + a.k * b.o + a.o * b.p,
+            p: a.d * b.m + a.h * b.n + a.l * b.o + a.p * b.p,
         }
     }
 
     pub fn transform(self, v: &Vec4) -> Vec4 {
-        let v00 = self.nums[0];
-        let v01 = self.nums[4];
-        let v02 = self.nums[8];
-        let v03 = self.nums[12];
-        let v10 = self.nums[1];
-        let v11 = self.nums[5];
-        let v12 = self.nums[9];
-        let v13 = self.nums[13];
-        let v20 = self.nums[2];
-        let v21 = self.nums[6];
-        let v22 = self.nums[10];
-        let v23 = self.nums[14];
-        let v30 = self.nums[3];
-        let v31 = self.nums[7];
-        let v32 = self.nums[11];
-        let v33 = self.nums[15];
+        let v00 = self.a;
+        let v01 = self.e;
+        let v02 = self.i;
+        let v03 = self.m;
+        let v10 = self.b;
+        let v11 = self.f;
+        let v12 = self.j;
+        let v13 = self.n;
+        let v20 = self.c;
+        let v21 = self.g;
+        let v22 = self.k;
+        let v23 = self.o;
+        let v30 = self.d;
+        let v31 = self.h;
+        let v32 = self.l;
+        let v33 = self.p;
 
         Vec4 {
             x: v.x * v00 + v.y * v01 + v.z * v02 + v.w * v03,

@@ -4,7 +4,10 @@ use wgpu::util::DeviceExt;
 
 use crate::{
     linear_algebra::{mat4::Mat4, vec3::Vec3},
-    scene::camera::{Camera, CameraType},
+    scene::{
+        camera::{Camera, CameraType},
+        scene::Scene,
+    },
 };
 
 #[repr(C)]
@@ -179,37 +182,15 @@ impl Renderer {
                 label: Some("scene bind group"),
             });
 
-        let mut camera = Camera::new(
-            Vec3 {
-                x: 0.0,
-                y: 0.0,
-                z: -10.0,
-            },
-            Vec3 {
-                x: 0.0,
-                y: 0.0,
-                z: 0.0,
-            },
-            Vec3 {
-                x: 0.0,
-                y: 1.0,
-                z: 0.0,
-            },
-            1.0,
-            1.0,
-            0.01,
-            10000.0,
-            CameraType::CAD,
-        );
+        let mut camera = Camera::default();
 
         let view_proj = camera.get_view_proj();
-
         let scene_uniforms = SceneUniforms { view_proj };
 
         let view_proj_buffer = device.create_buffer_init(&wgpu::util::BufferInitDescriptor {
             label: Some("view_proj_buffer"),
             contents: bytemuck::cast_slice(&[scene_uniforms]),
-            usage: wgpu::BufferUsages::UNIFORM,
+            usage: wgpu::BufferUsages::UNIFORM | wgpu::BufferUsages::COPY_DST,
         });
 
         let scene_bind_group = device.create_bind_group(&wgpu::BindGroupDescriptor {
@@ -305,9 +286,14 @@ impl Renderer {
         false
     }
 
-    pub fn update(&mut self) {}
+    pub fn update_scene_uniforms(&self, scene: &Scene) {
+        let view_proj = scene.get_camera().get_view_proj();
+        let scene_uniforms = SceneUniforms { view_proj };
+    }
 
-    pub fn render(&mut self) -> Result<(), wgpu::SurfaceError> {
+    pub fn render(&mut self, scene: &Scene) -> Result<(), wgpu::SurfaceError> {
+        self.update_scene_uniforms(scene);
+
         let output = self.surface.get_current_texture()?;
         let view = output
             .texture

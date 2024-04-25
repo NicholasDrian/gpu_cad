@@ -1,5 +1,7 @@
 use crate::linear_algebra::vec3::*;
 
+use wasm_bindgen::prelude::*;
+
 #[derive(Debug, Copy, Clone, Default, PartialEq)]
 pub struct Vec4 {
     pub x: f32,

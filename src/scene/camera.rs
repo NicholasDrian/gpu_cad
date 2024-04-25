@@ -1,6 +1,7 @@
 use std::time::Instant;
 
 use crate::linear_algebra::{mat4::Mat4, vec3::*};
+use crate::logging::*;
 
 use super::camera_interface::{CameraDescriptor, CameraType};
 
@@ -77,17 +78,14 @@ impl Camera {
     }
 
     pub fn turn_up(&mut self, theta: f32) -> &mut Self {
+        log("YAY");
         match (self.camera_type) {
-            CameraType::CAD => {
-                todo!();
-            }
-            CameraType::FPS => {
-                todo!();
-            }
+            CameraType::CAD => {}
+            CameraType::FPS => {}
         }
         self
     }
-    pub fn turn_right(&mut self, theta: f32) -> &mut Self {
+    pub fn look_right(&mut self, theta: f32) -> &mut Self {
         match (self.camera_type) {
             CameraType::CAD => {
                 todo!();

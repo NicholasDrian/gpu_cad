@@ -1,4 +1,4 @@
-import { Vec3, CameraDescriptor, set_camera, new_scene, greet, code_that_throws, run, CameraType } from './pkg';
+import { Vec3, CameraDescriptor, set_camera, new_scene, greet, code_that_throws, run, CameraType, turn_camera_up } from './pkg';
 
 let scene_handle = new_scene();
 console.log(scene_handle);
@@ -13,8 +13,8 @@ let camera_descriptor = new CameraDescriptor(
   1.0,
   CameraType.CAD
 )
-let set_camera_result = set_camera(scene_handle, camera_descriptor);
-console.log(camera_descriptor, set_camera_result);
+set_camera(scene_handle, camera_descriptor);
+turn_camera_up(scene_handle, 0.1)
 
 
 let res = greet('World');

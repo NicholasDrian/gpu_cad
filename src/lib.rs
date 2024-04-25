@@ -1,5 +1,6 @@
 pub mod geometry;
 pub mod linear_algebra;
+pub mod logging;
 pub mod render;
 pub mod scene;
 pub mod widgets;

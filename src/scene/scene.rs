@@ -27,6 +27,10 @@ impl Scene {
         &self.camera
     }
 
+    pub fn get_camera_mut(&mut self) -> &mut Camera {
+        &mut self.camera
+    }
+
     pub fn set_camera(&mut self, descriptor: CameraDescriptor) -> &mut Self {
         self.camera = Camera::new(descriptor);
         self

@@ -2,6 +2,8 @@ use super::vec4::Vec4;
 
 use wasm_bindgen::prelude::*;
 
+use crate::logging::*;
+
 #[wasm_bindgen]
 #[derive(Debug, Copy, Clone, Default, PartialEq)]
 pub struct Vec3 {
@@ -64,7 +66,7 @@ impl Vec3 {
             self.x = 1.0;
             self.y = 0.0;
             self.z = 0.0;
-            log::warn!("sketch");
+            log("sketch");
         }
         let size = size_square.sqrt();
         self.x /= size;
@@ -75,7 +77,7 @@ impl Vec3 {
     pub fn to_normalized(&self) -> Vec3 {
         let size_square = self.x * self.x + self.y * self.y + self.z * self.z;
         if size_square == 0.0 {
-            log::warn!("sketch");
+            log("sketch");
             return Vec3 {
                 x: 1.0,
                 y: 0.0,

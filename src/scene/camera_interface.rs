@@ -15,6 +15,32 @@ pub struct CameraDescriptor {
 }
 
 #[wasm_bindgen]
+impl CameraDescriptor {
+    #[wasm_bindgen(constructor)]
+    pub fn new(
+        position: Vec3,
+        focal_point: Vec3,
+        up: Vec3, //TODO: remove this param
+        fovy: f32,
+        aspect: f32,
+        near_dist: f32,
+        far_dist: f32,
+        camera_type: CameraType,
+    ) -> Self {
+        Self {
+            position,
+            focal_point,
+            up, //TODO: remove this param
+            fovy,
+            aspect,
+            near_dist,
+            far_dist,
+            camera_type,
+        }
+    }
+}
+
+#[wasm_bindgen]
 #[derive(Copy, Clone)]
 pub enum CameraType {
     /// This is a first person shooter style camera.

@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use crate::geometry::{curve::Curve, surface::Surface};
 
-use super::{camera::Camera, camera_descriptor::CameraDescriptor};
+use super::{camera::Camera, camera_interface::CameraDescriptor};
 
 pub type UUID = u32;
 

@@ -2,7 +2,7 @@ use std::time::Instant;
 
 use crate::linear_algebra::{mat4::Mat4, vec3::*};
 
-use super::camera_descriptor::{CameraDescriptor, CameraType};
+use super::camera_interface::{CameraDescriptor, CameraType};
 
 pub struct Camera {
     position: Vec3,

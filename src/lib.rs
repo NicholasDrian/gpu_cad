@@ -8,6 +8,7 @@ pub mod widgets;
 #[cfg(test)]
 pub mod tests;
 
+// for global static mut
 #[macro_use]
 extern crate lazy_static;
 
@@ -18,8 +19,9 @@ use render::renderer::Renderer;
 use scene::handles::{new_handle, Handle};
 use scene::scene::Scene;
 use wasm_bindgen::prelude::*;
+use web_sys::HtmlCanvasElement;
 use winit::dpi::PhysicalSize;
-use winit::platform::web::WindowExtWebSys;
+use winit::platform::web::{WindowBuilderExtWebSys, WindowExtWebSys};
 
 use winit::{
     event::*,
@@ -66,29 +68,23 @@ pub fn code_that_throws() -> Result<String, JsValue> {
     Ok(String::from("returned from throwing code"))
 }
 
+// This is run once on module load
 #[wasm_bindgen(start)]
-pub async fn run() {
+pub fn init() {}
+
+#[wasm_bindgen]
+pub async fn run(canvas: HtmlCanvasElement) {
     std::panic::set_hook(Box::new(console_error_panic_hook::hook));
     console_log::init_with_level(log::Level::Warn).expect("Could't initialize logger");
 
     let event_loop = EventLoop::new();
-    let window = WindowBuilder::new().build(&event_loop).unwrap();
+    let window = WindowBuilder::new()
+        .with_canvas(Some(canvas))
+        .build(&event_loop)
+        .unwrap();
 
-    // Winit prevents sizing with CSS, so we have to set
-    // the size manually when on web.
-    window.set_inner_size(PhysicalSize::new(450, 400));
+    window.set_inner_size(PhysicalSize::new(850, 1200));
 
-    web_sys::window()
-        .and_then(|win| win.document())
-        .and_then(|doc| {
-            let dst = doc.get_element_by_id("wasm-example")?;
-            let canvas = web_sys::Element::from(window.canvas());
-            dst.append_child(&canvas).ok()?;
-            Some(())
-        })
-        .expect("Couldn't append canvas to document body.");
-
-    // State::new uses async code, so we're going to wait for it to finish
     let mut renderer = Renderer::new(window).await;
 
     event_loop.run(move |event, _, control_flow| {

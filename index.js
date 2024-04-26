@@ -25,9 +25,10 @@ console.log(res);
 
 var canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
+console.log("canvas", canvas);
 
 var div = document.createElement('div');
 document.body.appendChild(div);
 div.id = "wasm-example";
 
-run(); 
+run(canvas); 

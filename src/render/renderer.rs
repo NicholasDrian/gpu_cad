@@ -286,6 +286,7 @@ impl Renderer {
     pub fn update_scene_uniforms(&self, scene: &Scene) {
         let view_proj = scene.get_camera().get_view_proj();
         let scene_uniforms = SceneUniforms { view_proj };
+        //        todo!("tododoodododododo")
     }
 
     pub fn render(&mut self, scene: &Scene) -> Result<(), wgpu::SurfaceError> {

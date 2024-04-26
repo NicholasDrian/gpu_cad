@@ -76,12 +76,16 @@ pub struct Renderer {
     size: winit::dpi::PhysicalSize<u32>,
     render_pipeline: wgpu::RenderPipeline,
     scene_bind_group: wgpu::BindGroup,
+    view_proj_buffer: wgpu::Buffer,
     vertex_buffer: wgpu::Buffer,
     index_buffer: wgpu::Buffer,
     num_indices: u32,
     window: Window,
 }
 
+unsafe fn any_as_u8_slice<T: Sized>(p: &T) -> &[u8] {
+    ::core::slice::from_raw_parts((p as *const T) as *const u8, ::core::mem::size_of::<T>())
+}
 impl Renderer {
     pub async fn new(window: Window) -> Self {
         let size = window.inner_size();
@@ -258,6 +262,7 @@ impl Renderer {
             size,
             render_pipeline,
             scene_bind_group,
+            view_proj_buffer,
             vertex_buffer,
             index_buffer,
             num_indices,
@@ -286,7 +291,9 @@ impl Renderer {
     pub fn update_scene_uniforms(&self, scene: &Scene) {
         let view_proj = scene.get_camera().get_view_proj();
         let scene_uniforms = SceneUniforms { view_proj };
-        //        todo!("tododoodododododo")
+        self.queue.write_buffer(&self.view_proj_buffer, 0, unsafe {
+            any_as_u8_slice(&scene_uniforms)
+        });
     }
 
     pub fn render(&mut self, scene: &Scene) -> Result<(), wgpu::SurfaceError> {

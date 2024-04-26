@@ -36,8 +36,7 @@ impl Default for Camera {
     }
 }
 
-pub type Radians = f32;
-
+//TODO: toggle for auto motion... eventually
 impl Camera {
     pub fn new(params: CameraDescriptor) -> Self {
         let mut res = Self {

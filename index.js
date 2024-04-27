@@ -16,19 +16,8 @@ let camera_descriptor = new CameraDescriptor(
 set_camera(scene_handle, camera_descriptor);
 turn_camera_up(scene_handle, 0.1)
 
-
-let res = greet('World');
-console.log(res);
-
-res = code_that_throws();
-console.log(res);
-
 var canvas = document.createElement('canvas');
 document.body.appendChild(canvas);
 console.log("canvas", canvas);
-
-var div = document.createElement('div');
-document.body.appendChild(div);
-div.id = "wasm-example";
 
 run(canvas, scene_handle); 

@@ -42,32 +42,6 @@ pub fn new_scene() -> Handle {
     handle
 }
 
-#[wasm_bindgen]
-extern "C" {
-    fn alert(s: &str);
-}
-
-#[wasm_bindgen]
-pub fn greet(name: &str) -> String {
-    alert(&format!("Hello, {}!", name));
-
-    String::from("returned from rust")
-}
-
-#[wasm_bindgen]
-pub fn code_that_throws() -> Result<String, JsValue> {
-    let window = web_sys::window().expect("no global `window` exists");
-    let document = window.document().expect("should have a document on window");
-    let body = document.body().expect("document should have a body");
-
-    let val = document.create_element("p")?;
-    val.set_text_content(Some("Hello from Rust!"));
-
-    body.append_child(&val)?;
-
-    Ok(String::from("returned from throwing code"))
-}
-
 // This is run once on module load
 #[wasm_bindgen(start)]
 pub fn init() {}

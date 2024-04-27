@@ -73,7 +73,7 @@ pub fn code_that_throws() -> Result<String, JsValue> {
 pub fn init() {}
 
 #[wasm_bindgen]
-pub async fn run(canvas: HtmlCanvasElement) {
+pub async fn run(canvas: HtmlCanvasElement, scene_handle: Handle) {
     std::panic::set_hook(Box::new(console_error_panic_hook::hook));
     console_log::init_with_level(log::Level::Warn).expect("Could't initialize logger");
 
@@ -83,7 +83,7 @@ pub async fn run(canvas: HtmlCanvasElement) {
         .build(&event_loop)
         .unwrap();
 
-    window.set_inner_size(PhysicalSize::new(850, 1200));
+    window.set_inner_size(PhysicalSize::new(1200, 850));
 
     let mut renderer = Renderer::new(window).await;
 
@@ -117,7 +117,10 @@ pub async fn run(canvas: HtmlCanvasElement) {
                 }
             }
             Event::RedrawRequested(window_id) if window_id == renderer.window().id() => {
-                match renderer.render(&Scene::default()) {
+                let mut scenes_changer = SCENES.lock().unwrap();
+                let scene: &mut Scene = (*scenes_changer).get_mut(&scene_handle).unwrap();
+                scene.tick();
+                match renderer.render(scene) {
                     Ok(_) => {}
                     // Reconfigure the surface if it's lost or outdated
                     Err(wgpu::SurfaceError::Lost | wgpu::SurfaceError::Outdated) => {

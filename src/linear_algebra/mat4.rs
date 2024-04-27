@@ -76,7 +76,6 @@ impl Mat4 {
     }
 
     pub fn look_at(position: &Vec3, focal_point: &Vec3, up: &Vec3) -> Mat4 {
-        // Z Axis is forward, not up
         let z_axis = Vec3::subtract(position, focal_point).to_normalized();
         let x_axis = Vec3::cross(up, &z_axis).to_normalized();
         let y_axis = Vec3::cross(&z_axis, &x_axis);
